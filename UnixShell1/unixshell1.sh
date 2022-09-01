@@ -16,35 +16,40 @@ echo "Done"
 : ' Problem 1: In the space below, write commands to change into the
 Shell1/ directory and print a string telling you the current working
 directory. '
-
-
+cd Shell1
+pwd
 
 : ' Problem 2: Use ls with flags to print one list of the contents of
 Shell1/, including hidden files and folders, listing contents in long
 format, and sorting output by file size. '
-
+ls -alS
 
 : ' Problem 3: Inside the Shell1/ directory, delete the Audio/ folder
 along with all its contents. Create Documents/, Photos/, and
 Python/ directories. Rename the Random/ folder as Files/. '
-
-
+rm -r Audio/
+mkdir Documents/
+mkdir Photos/
+mkdir Python/
+mv Random/ Files/
 
 : ' Problem 4: Using wildcards, move all the .jpg files to the Photos/
 directory, all the .txt files to the Documents/ directory, and all the
 .py files to the Python/ directory. '
-
-
+mv *.jpg Photos/
+mv *.txt Documents/
+mv *.py Python/
 
 : ' Problem 5: Move organize_photos.sh to Scripts/, add executable
 permissions to the script, and run the script. '
-
-
+pwd
+mv ./Files/Feb/organize_photos.sh ./Scripts/
+chmod u+x ./Scripts/organize_photos.sh
+bash ./Scripts/organize_photos.sh
 
 : ' Problem 6: Copy img_649.jpg from UnixShell1/ to Shell1/Photos, making
 sure to leave a copy of the file in UnixShell1/.'
-
-
+cp ../img_649.jpg ../Shell1/Photos/
 
 # remove any old copies of UnixShell1.tar.gz
 if [ ! -d Shell1 ];
