@@ -204,6 +204,8 @@ def shut_the_box(player, time_limit):
     
 
 if __name__ == '__main__':
+    # To play shut_the_box, pass in two terminal arguments:
+    # <player name (str)> <time limit (int)>
     if len(sys.argv) == 3:
         try:
             time_limit = int(sys.argv[2])
