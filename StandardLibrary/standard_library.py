@@ -16,7 +16,7 @@ def prob1(L):
     """Return the minimum, maximum, and average of the entries of L
     (in that order, separated by a comma).
     """
-    return min(L), max(L), statistics.mean(L)
+    return min(L), max(L), sum(L)/len(L)
 
 
 # Problem 2
