@@ -5,10 +5,8 @@ Section 3
 Tues. Sept. 13, 2022
 """
 
-
 from math import sqrt, isclose
 from numbers import Complex
-
 
 class Backpack:
     """A Backpack object class. Has a name, color, size, and a list of contents.
@@ -27,7 +25,7 @@ class Backpack:
 
     @staticmethod
     def origin():
-        # Static method for all Backpack instances.
+        '''Static method for all Backpack instances.'''
         print('Manufactured by me.')
 
     # Problem 1: Modify __init__() and put(), and write dump().
@@ -99,6 +97,8 @@ class Backpack:
                 f'Contents:\t{self.contents}'
 
 def test_backpack():
+    '''Test the Backpack class.'''
+
     # Instantiate the object.
     testpack = Backpack("Barry", "black")
 
@@ -228,7 +228,7 @@ class Jetpack(Backpack):
     def dump(self):
         """Use the Backpack.dump() method to empty the list of contents, then set the fuel level to zero."""
 
-        Backpack.dump()
+        Backpack.dump(self)
 
         # Empty the fuel.
         self.fuel = 0
@@ -259,6 +259,7 @@ class ComplexNumber:
         return ComplexNumber(self.real, -1 * self.imag)
 
     def __str__(self):
+        '''Print the Complex Number in the form a+bj or a-bj if a != 0, and bj or -bj otherwise.'''
         r = lambda num: int(num) if num.is_integer() else num
 
         if self.real == 0:
@@ -312,6 +313,8 @@ class ComplexNumber:
             return self * other.conjugate() / (other * other.conjugate()).real
 
 def test_ComplexNumber(a, b):
+    '''Compare the custom ComplexNumber class against Python's built-in complex class.'''
+
     py_cnum, my_cnum = complex(a, b), ComplexNumber(a, b)
 
     # Validate the constructor.
