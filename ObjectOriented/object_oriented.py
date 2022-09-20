@@ -208,7 +208,7 @@ class Jetpack(Backpack):
 
         # Use the backpack constructor to initialize the backpack-like attributes
         # of the jetpack, and then initizlaize the fuel attribute.
-        Backpack.__init__(self, name, color, max_size=3)
+        Backpack.__init__(self, name, color, max_size)
         self.fuel = fuel
     
     def fly(self, amount):

@@ -1,3 +1,17 @@
+# Nathan's ignored files ------------------------------------------------------
+Exceptions_FileIO/a_lower.txt
+Exceptions_FileIO/a_reverse.txt
+Exceptions_FileIO/a_transpose.txt
+Exceptions_FileIO/a_upper.txt
+Exceptions_FileIO/b_lower.txt
+Exceptions_FileIO/b_reverse.txt
+Exceptions_FileIO/b_transpose.txt
+Exceptions_FileIO/b_upper.txt
+Exceptions_FileIO/spec_exceptions_fileIO.py
+ObjectOriented/spec_object_oriented.py
+StandardLibrary/spec_standard_library.py
+UnixShell1/Shell1/
+UnixShell1/img_649.jpg
 
 # Lab data files --------------------------------------------------------------
 
