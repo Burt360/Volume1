@@ -1,0 +1,25 @@
+09/22/22 17:10
+
+Problem 1 (5 points):
+Score += 5
+
+Problem 2 (5 points):
+Score += 5
+
+Problem 3 (10 points):
+Score += 10
+
+Problem 4 (25 points):
+ContentFilter.uniform() failed to raise a ValueError (no Exception raised)
+ContentFilter.reverse() failed to raise a ValueError (no Exception raised)
+Score += 23
+
+Code Quality (5 points):
+Score += 5
+
+Total score: 48/50 = 96.0%
+
+Great job!
+
+-------------------------------------------------------------------------------
+
