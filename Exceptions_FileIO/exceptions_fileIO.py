@@ -124,16 +124,12 @@ class ContentFilter(object):
         # Functions which return the upper or lower case versions of contents when called.
         cases = {'upper' : self.contents.strip().upper, 'lower' : self.contents.strip().lower}
 
-        try:
-            if case not in cases:
-                raise ValueError("case should be either 'upper' or 'lower'.")
+        if case not in cases:
+            raise ValueError("case should be either 'upper' or 'lower'.")
 
-            # Write to the file in either upper or lower case.
-            with open(outfile, mode) as file:
-                file.write(cases[case]())
-                
-        except ValueError as err:
-            print(err)
+        # Write to the file in either upper or lower case.
+        with open(outfile, mode) as file:
+            file.write(cases[case]())
 
     def reverse(self, outfile, mode='w', unit='word'):
         """Write the data to the outfile in reverse order."""
@@ -142,29 +138,25 @@ class ContentFilter(object):
 
         units = {'word', 'line'}
 
-        try:
-            if unit not in units:
-                raise ValueError("unit should be either 'word' or 'line'.")
+        if unit not in units:
+            raise ValueError("unit should be either 'word' or 'line'.")
             
-            with open(outfile, mode) as file:
-                lines = self.contents.strip().split('\n')
+        with open(outfile, mode) as file:
+            lines = self.contents.strip().split('\n')
 
-                if unit == 'word':
-                    lines_with_words_reversed = list()
+            if unit == 'word':
+                lines_with_words_reversed = list()
 
-                    # Append lines with words reversed.
-                    for line in lines:
-                        words = line.split()
-                        lines_with_words_reversed.append(' '.join(words[::-1]))
-                    file.write('\n'.join(lines_with_words_reversed))
-                
-                elif unit == 'line':
-                    # Write the lines in reversed order.
-                    lines_reversed = lines[::-1]
-                    file.write('\n'.join(lines_reversed))
-                
-        except ValueError as err:
-            print(err)
+                # Append lines with words reversed.
+                for line in lines:
+                    words = line.split()
+                    lines_with_words_reversed.append(' '.join(words[::-1]))
+                file.write('\n'.join(lines_with_words_reversed))
+            
+            elif unit == 'line':
+                # Write the lines in reversed order.
+                lines_reversed = lines[::-1]
+                file.write('\n'.join(lines_reversed))
 
     def transpose(self, outfile, mode='w'):
         """Write the transposed version of the data to the outfile."""
