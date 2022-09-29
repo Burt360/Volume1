@@ -1,0 +1,24 @@
+09/29/22 17:36
+
+Problem 1 (10 points):
+Score += 10
+
+Problem 2 (15 points):
+Score += 15
+
+Problem 3 (10 points):
+Score += 10
+
+Problem 4 (10 points):
+numpy matric vector should be faster than regular matrix vector
+Score += 9
+
+Code Quality (5 points):
+Score += 5
+
+Total score: 49/50 = 98.0%
+
+Excellent!
+
+-------------------------------------------------------------------------------
+
