@@ -282,4 +282,3 @@ def prob6():
     plt.legend()
     plt.show()
 
-prob6()
