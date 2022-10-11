@@ -1,10 +1,17 @@
 # linear_systems.py
 """Volume 1: Linear Systems.
-<Name>
-<Class>
-<Date>
+Nathan Schill
+Sec. 3
+Tues. Oct. 18, 2022
 """
 
+import numpy as np
+from scipy import linalg as la
+from scipy import sparse
+from scipy.sparse import linalg as spla
+
+from time import perf_counter as pc
+from matplotlib import pyplot as plt
 
 # Problem 1
 def ref(A):
@@ -18,7 +25,18 @@ def ref(A):
     Returns:
         ((n,n) ndarray): The REF of A.
     """
-    raise NotImplementedError("Problem 1 Incomplete")
+
+    n = np.shape(A)[0]
+    B = A.copy()
+
+    # Iterate across columns
+    for j in range(n):
+        # Row reduce each row below the jth row and starting with the jth column
+        for i in range(j+1, n):
+            B[i,j:] -= (B[i, j] / B[j, j]) * B[j, j:]
+    
+    #print(B)
+    return B
 
 
 # Problem 2
@@ -33,7 +51,19 @@ def lu(A):
         L ((n,n) ndarray): The lower-triangular part of the decomposition.
         U ((n,n) ndarray): The upper-triangular part of the decomposition.
     """
-    raise NotImplementedError("Problem 2 Incomplete")
+
+    n = np.shape(A)[0]
+    u = A.copy()
+    l = np.identity(n)
+
+    # Iterate across columns
+    for j in range(n-1):
+        # Row reduce each row below the jth row and starting with the jth column
+        for i in range(j+1, n):
+            l[i,j] = u[i, j] / u[j, j]
+            u[i,j:] -= l[i,j] * u[j, j:]
+    
+    return l, u
 
 
 # Problem 3
@@ -48,7 +78,25 @@ def solve(A, b):
     Returns:
         x ((m,) ndarray): The solution to the linear system.
     """
-    raise NotImplementedError("Problem 3 Incomplete")
+    n = np.shape(A)[0]
+
+    L, U = lu(A)
+
+    # Init y, x as row vectors for easier coding
+    y = [0] * n
+    x = [0] * n
+
+    ### Solve Ly = b for y
+    # Iterate down the entries of y
+    for i in range(n):
+        y[i] = b[i][0] - sum([L[i,j] * y[j] for j in range(i)])
+
+    ### Solve Ux = y for x
+    # Iterate up the entries of x
+    for i in range(n-1, 0-1, -1):
+        x[i] = 1/U[i][i] * (y[i] - sum([U[i][j] * x[j] for j in range(i+1, n)]))
+
+    return np.vstack(np.array(x))
 
 
 # Problem 4
@@ -69,7 +117,68 @@ def prob4():
     Plot the system size n versus the execution times. Use log scales if
     needed.
     """
-    raise NotImplementedError("Problem 4 Incomplete")
+    
+    MAX_N = 12
+
+    # Values of n to time
+    N = [2**i for i in range(MAX_N)]
+
+    # Dictionary of times
+    test_times = {
+        'inv' : list(),
+        'solve' : list(),
+        'lu_factor-lu_solve' : list(),
+        'lu_solve' : list()
+    }
+
+    # For each size n, store the time for each type of solve
+    for n in N:
+        A = np.random.random((n,n))
+        b = np.random.random(n)
+
+        start = None
+        end = None
+
+        ### 1: la.inv
+        start = pc()
+        la.inv(A) @ b
+        end = pc()
+        test_times['inv'].append(end - start)
+
+        ### 2: la.solve
+        start = pc()
+        la.solve(A, b)
+        end = pc()
+        test_times['solve'].append(end - start)
+
+        ### 3: lu.factor and lu_solve
+        start = pc()
+        L, P = la.lu_factor(A)
+        la.lu_solve((L, P), b)
+        end = pc()
+        test_times['lu_factor-lu_solve'].append(end - start)
+
+        ### 4: lu_solve
+        L, P = la.lu_factor(A)
+
+        start = pc()
+        la.lu_solve((L, P), b)
+        end = pc()
+        test_times['lu_solve'].append(end - start)
+
+    # Plot the times for each solve method
+    for test, times in test_times.items():
+        plt.loglog(N, times, label=test)
+    
+    # Set x-axis scale as log_2
+    plt.xscale('log', base=2)
+
+    # Label axes and title, show legend, and show plot
+    plt.xlabel('n')
+    plt.ylabel('time (seconds)')
+    plt.title('Time to solve Ax=b')
+    plt.legend()
+    plt.show()
 
 
 # Problem 5
@@ -89,7 +198,22 @@ def prob5(n):
     Returns:
         A ((n**2,n**2) SciPy sparse matrix)
     """
-    raise NotImplementedError("Problem 5 Incomplete")
+
+    B = sparse.diags([1, -4, 1], (-1, 0, 1), shape=(n, n))
+    I = np.identity(n)
+
+    form = [[None for _ in range(i)] +
+            [I if i >= 1 else None]+ [B] + [I if i <= n-2 else None] +
+            [None for _ in range(n-i)]
+            for i in range(n)]
+    
+    A = sparse.bmat(form)
+
+    #print(A.toarray())
+    #plt.spy(A, markersize=1)
+    #plt.show()
+
+    return A
 
 
 # Problem 6
@@ -108,4 +232,54 @@ def prob6():
     size n**2 versus the execution times. As always, use log scales where
     appropriate and use a legend to label each line.
     """
-    raise NotImplementedError("Problem 6 Incomplete")
+    
+    MAX_N = 7
+
+    # Values of n to time
+    N = [2**i for i in range(1, MAX_N)]
+
+    # Dictionary of times
+    test_times = {
+        'sparse_solve' : list(),
+        'reg_solve' : list()
+    }
+
+    # For each size n, store the time for each type of solve
+    for n in N:
+        A = prob5(n)
+        b = np.random.random(n**2)
+
+        start = None
+        end = None
+
+        ### 1: sparse_solve
+        B = A.tocsr()
+
+        start = pc()
+        spla.spsolve(B, b)
+        end = pc()
+        test_times['sparse_solve'].append(end - start)
+
+        ### 2: la_solve
+        C = A.toarray()
+
+        start = pc()
+        la.solve(C, b)
+        end = pc()
+        test_times['reg_solve'].append(end - start)
+
+    # Plot the times for each solve method
+    for test, times in test_times.items():
+        plt.loglog([n for n in N], times, label=test)
+    
+    # Set x-axis scale as log_2
+    plt.xscale('log', base=2)
+
+    # Label axes and title, show legend, and show plot
+    plt.xlabel('n')
+    plt.ylabel('time (seconds)')
+    plt.title('Time to solve Ax=b where A is (n^2 x n^2)')
+    plt.legend()
+    plt.show()
+
+prob6()
