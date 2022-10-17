@@ -35,7 +35,6 @@ def ref(A):
         for i in range(j+1, n):
             B[i,j:] -= (B[i, j] / B[j, j]) * B[j, j:]
     
-    #print(B)
     return B
 
 
@@ -89,14 +88,14 @@ def solve(A, b):
     ### Solve Ly = b for y
     # Iterate down the entries of y
     for i in range(n):
-        y[i] = b[i][0] - sum([L[i,j] * y[j] for j in range(i)])
+        y[i] = b[i] - sum([L[i,j] * y[j] for j in range(i)])
 
     ### Solve Ux = y for x
     # Iterate up the entries of x
     for i in range(n-1, 0-1, -1):
         x[i] = 1/U[i][i] * (y[i] - sum([U[i][j] * x[j] for j in range(i+1, n)]))
 
-    return np.vstack(np.array(x))
+    return np.array(x)
 
 
 # Problem 4
@@ -209,9 +208,11 @@ def prob5(n):
     
     A = sparse.bmat(form)
 
-    #print(A.toarray())
-    #plt.spy(A, markersize=1)
-    #plt.show()
+    def test():
+        plt.spy(A, markersize=1)
+        plt.show()
+    
+    test()
 
     return A
 
