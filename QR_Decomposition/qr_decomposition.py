@@ -23,7 +23,7 @@ def qr_gram_schmidt(A):
     ### Algorithm as given in Algorithm 3.1 in QR Decomposition PDF.
 
     m, n = A.shape
-    Q = A.copy()
+    Q = A.astype(float)
     R = np.zeros((n, n))
 
     for i in range(n):
@@ -97,12 +97,12 @@ def qr_householder(A):
     ### Algorithm as given in Algorithm 3.2 in QR Decomposition PDF.
     m, n = A.shape
     Q = np.identity(m)
-    R = A.copy()
+    R = A.astype(float)
 
     sign = lambda x: 1 if x >= 0 else -1
 
     for k in range(n):
-        u = R[k:,k].copy()
+        u = R[k:,k].astype(float)
         u[0] = u[0] + sign(u[0]) * la.norm(u)
         u = u/la.norm(u)
 
@@ -128,13 +128,13 @@ def hessenberg(A):
     ### Algorithm as given in Algorithm 3.3 in QR Decomposition PDF.
     
     m, n = A.shape
-    H = A.copy()
+    H = A.astype(float)
     Q = np.identity(m)
 
     sign = lambda x: 1 if x >= 0 else -1
 
     for k in range(n-2):
-        u = H[k+1:,k].copy()
+        u = H[k+1:,k].astype(float)
         u[0] = u[0] + sign(u[0]) * la.norm(u)
 
         u = u/la.norm(u)
