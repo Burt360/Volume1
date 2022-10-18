@@ -68,14 +68,13 @@ def solve(A, b):
     m, n = A.shape
     Q, R = la.qr(A, mode='economic')
 
+    # Ax = QRx = b -> Rx = Q^T b = y since Q is orthonormal
     y = Q.T @ b
-
-    # Solve Rx = y for x.
 
     # Init x as row  for easier coding
     x = [0] * n
 
-    ### Solve Ux = y for x
+    ### Solve Rx = y for x
     # Iterate up the entries of x
     for i in range(n-1, 0-1, -1):
         x[i] = 1/R[i][i] * (y[i] - sum([R[i][j] * x[j] for j in range(i+1, n)]))
