@@ -211,8 +211,6 @@ def prob5(n):
     def test():
         plt.spy(A, markersize=1)
         plt.show()
-    
-    test()
 
     return A
 
