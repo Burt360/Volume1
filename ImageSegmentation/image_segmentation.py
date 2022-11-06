@@ -159,7 +159,7 @@ class ImageSegmenter:
         # Convert A to a csc_matrix
         A = sparse.csc_matrix(A)
 
-        return A, D
+        return A, np.array(D)
     
     # Problem 5
     def cut(self, A, D):
