@@ -1,8 +1,7 @@
 # sympy_intro.py
 """Python Essentials: Introduction to SymPy.
-<Name>
-<Class>
-<Date>
+Nathan Schill
+Section 2
 """
 
 
