@@ -1,0 +1,43 @@
+02/03/23 15:29
+
+Problem 1 (5 points):
+Score += 5
+
+Problem 2 (5 points):
+prob2(30, 20, 2000, 8000) failed
+	Correct response: 0.03877843223027752
+	Student response: (0.03877843223027751, True, 5)
+prob2(35, 15, 2500, 7500) failed
+	Correct response: 0.009938822516920501
+	Student response: (0.009938822516920446, True, 8)
+Score += 0
+
+Problem 3 (5 points):
+Score += 5
+
+Problem 4 (5 points):
+Use a bigger linspace
+optimal_alpha() returned nonoptimal alpha
+Score += 2
+
+Problem 5 (5 points):
+Score += 5
+
+Problem 6 (10 points):
+prob6() failed: starting point does not converge to [3.75, .25] with backtracking
+Score += 5
+
+Problem 7 (10 points):
+Score += 10
+
+Code Quality (5 points):
+Score += 5
+
+Total score: 37/50 = 74.0%
+
+
+Comments:
+	By bigger linspace, I mean one with a finer grid. Let me know if you have any questions
+
+-------------------------------------------------------------------------------
+
