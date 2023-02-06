@@ -103,7 +103,7 @@ def prob2(N1, N2, P1, P2):
     Df = lambda r: P1*N1*(1+r)**(N1-1) - P2*N2*(1+r)**(-N2-1)
 
     # Return Newton's method on f
-    return newton(f, x0, Df, maxiter=100)
+    return newton(f, x0, Df, maxiter=100)[0]
 
 
 # Problem 4
@@ -125,7 +125,7 @@ def optimal_alpha(f, x0, Df, tol=1e-5, maxiter=15):
     """
     
     # Get alpha values at the specified distance apart
-    space = 0.05
+    space = 0.001
     A = np.linspace(0.1, 1, int((1-0.1)/space + 1))
 
     # Get number of iterations of each a
