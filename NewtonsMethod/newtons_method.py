@@ -156,7 +156,6 @@ def prob6():
     
     # Define gamma, delta, tol, maxiter
     c, d = 5, 1
-    tol, maxiter = 1e-5, 100
     
     # Define f and Df
     def f(input):
@@ -180,7 +179,7 @@ def prob6():
     A = (0.55, 1)
 
     # Iterate through points
-    num_pts_each_dir = 20
+    num_pts_each_dir = 300
     pts = [(i, j) for i in np.linspace(0, -1/4, num_pts_each_dir) for j in np.linspace(0, 1/4, num_pts_each_dir)]
 
     for pt in pts:
@@ -188,15 +187,15 @@ def prob6():
         results = [None] * 2
         for i, a in enumerate(A):
             try:
-                results[i] = newton(f, pt, Df, tol=tol, maxiter=maxiter, alpha=a)
+                results[i] = newton(f, pt, Df, alpha=a)
             except np.linalg.LinAlgError:
                 pass
         
         # Verify the results are None (which would result from a non-invertible derivative matrix)
         if results[0] is not None and results[1] is not None:
             # Check if the value converged to the expected zero for the corresponding alpha
-            if np.allclose(results[0][0], (3.75, 0.25), atol=tol/2) and\
-               (np.allclose(results[1][0], (0,1), atol=tol) or np.allclose(results[1][0], (0,-1), atol=tol)):
+            if np.allclose(results[0][0], (3.75, 0.25)) and\
+               (np.allclose(results[1][0], (0,1)) or np.allclose(results[1][0], (0,-1))):
                 # Found point; return it
                 return np.array(pt)
     
