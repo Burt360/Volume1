@@ -1,18 +1,28 @@
 # condition_stability.py
 """Volume 1: Conditioning and Stability.
-<Name>
-<Class>
-<Date>
+Nathan Schill
+Section 2
+Tues. Feb. 14, 2023
 """
 
+import matplotlib.pyplot as plt
 import numpy as np
 import sympy as sy
+from scipy import linalg as spla
 
 
 # Problem 1
 def matrix_cond(A):
     """Calculate the condition number of A with respect to the 2-norm."""
-    raise NotImplementedError("Problem 1 Incomplete")
+    
+    # Get singular values
+    sv = spla.svdvals(A)
+
+    # If zero is a singular value, return inf
+    if 0 in sv:
+        return np.inf
+    
+    return sv[0]/sv[-1]
 
 
 # Problem 2
@@ -27,14 +37,47 @@ def prob2():
         (float) The average absolute condition number.
         (float) The average relative condition number.
     """
+    PERTURB_VAR = 1e-10
+    
     w_roots = np.arange(1, 21)
 
     # Get the exact Wilkinson polynomial coefficients using SymPy.
     x, i = sy.symbols('x i')
     w = sy.poly_from_expr(sy.product(x-i, (i, 1, 20)))[0]
     w_coeffs = np.array(w.all_coeffs())
+    
+    # Store absolute and relative condition numbers
+    abs_cond = [None] * 100
+    rel_cond = [None] * 100
 
-    raise NotImplementedError("Problem 2 Incomplete")
+    for i in range(100):
+        # Get perturbed coefficients
+        r = np.random.normal(1, PERTURB_VAR, size=len(w_coeffs))
+        new_coeffs = w_coeffs * r
+        
+        # Get roots, then get real and imaginary parts
+        new_roots = np.roots(np.poly1d(new_coeffs))
+        r, c = np.real(new_roots), np.imag(new_roots)
+        
+        if i == 0:
+            plt.plot(r, c, color='k', marker=',', lw=0, label='Perturbed')
+        else:
+            plt.plot(r, c, color='k', marker=',', lw=0)
+
+        # Estimate the absolute condition number in the infinity norm
+        abs_cond[i] = spla.norm(new_roots - w_roots, np.inf) / spla.norm(r, np.inf)
+
+        # Estimate the relative condition number in the infinity norm
+        rel_cond[i] = abs_cond[i] * spla.norm(w_coeffs, np.inf) / spla.norm(w_roots, np.inf)
+
+    # Plot properties
+    plt.scatter(w_roots, np.zeros(len(w_roots)), label='Original')
+    plt.legend()
+    plt.title('Roots of perturbed Wilkinson polynomial in complex plane')
+    plt.show()
+
+    # Return means
+    return np.mean(abs_cond), np.mean(rel_cond)
 
 
 # Helper function
@@ -69,7 +112,21 @@ def eig_cond(A):
         (float) The absolute condition number of the eigenvalue problem at A.
         (float) The relative condition number of the eigenvalue problem at A.
     """
-    raise NotImplementedError("Problem 3 Incomplete")
+    PERTURB_VAR = 1e-10
+
+    # Compute H, A tilde
+    H = np.random.normal(0, PERTURB_VAR, size=A.shape) + 1j*np.random.normal(0, PERTURB_VAR, size=A.shape)
+    At = A + H
+
+    # Get eigenvalues (sort perturbed matrix's eigenvalues)
+    A_eig = spla.eigvals(A)
+    At_eig = reorder_eigvals(A_eig, spla.eigvals(At))
+
+    # Approximate absolute and relative condition numbers with 2-norms
+    abs_cond = spla.norm(A_eig - At_eig)/spla.norm(H, ord=2)
+    rel_cond = spla.norm(A, ord=2)/spla.norm(A_eig) * abs_cond
+
+    return abs_cond, rel_cond
 
 
 # Problem 4
@@ -83,7 +140,19 @@ def prob4(domain=[-100, 100, -100, 100], res=50):
         domain ([x_min, x_max, y_min, y_max]):
         res (int): number of points along each edge of the grid.
     """
-    raise NotImplementedError("Problem 4 Incomplete")
+    # Get points
+    x = np.linspace(domain[0], domain[1], res)
+    y = np.linspace(domain[2], domain[3], res)
+    X, Y = np.meshgrid(x, y)
+
+    # Get relative condition number for each matrix in grid
+    A = [[eig_cond(np.array([[1,u],[v,1]]))[1] for u in x] for v in y]
+    
+    # Plot
+    plt.pcolormesh(X, Y, A, cmap='gray_r')
+    plt.colorbar()
+    plt.title('Approximate relative condition num for [[1, x],[y,1]]')
+    plt.show()
 
 
 # Problem 5
@@ -101,7 +170,37 @@ def prob5(n):
         (float): The forward error using the normal equations.
         (float): The forward error using the QR decomposition.
     """
-    raise NotImplementedError("Problem 5 Incomplete")
+    
+    # Load data
+    xk, yk = np.load('stability_data.npy').T
+    A = np.vander(xk, n+1)
+
+    # Method 1: x = (A.T A)^-1 A.T b
+    x1 = spla.inv(A.T@A) @ A.T @ yk
+
+    # Method 2: A.T A x = A.T b with QR decomp
+    Q, R = spla.qr(A.T@A, mode='economic')
+    x2 = spla.solve_triangular(R, Q.T@A.T@yk)
+
+    # Get polynomials (note reversal of coefficients)
+    poly1 = np.polynomial.polynomial.Polynomial(x1[::-1])
+    poly2 = np.polynomial.polynomial.Polynomial(x2[::-1])
+
+    # Plot domain
+    domain = np.linspace(min(xk), max(xk), 100)
+    
+    # Plot
+    plt.plot(domain, poly1(domain), label='method 1')
+    plt.plot(domain, poly2(domain), label='method 2')
+
+    # Plot properties
+    plt.scatter(xk, yk)
+    plt.legend()
+    plt.title(f'Fit degree-{n} polynomial to data')
+    plt.show()
+
+    # Return forward error for each method
+    return spla.norm(A@x1 - yk, ord=2), spla.norm(A@x2 - yk, ord=2)
 
 
 # Problem 6
@@ -111,4 +210,26 @@ def prob6():
     Plot the relative forward error of the subfactorial formula for each
     value of n. Use a log scale for the y-axis.
     """
-    raise NotImplementedError("Problem 6 Incomplete")
+    # Get n
+    N = range(5, 51, 5)
+
+    # Get expr
+    x, n = sy.symbols('x n')
+    expr = x**n * sy.exp(x-1)
+
+    # Get exact and approximate value for each n
+    sympy = np.array([sy.N(sy.integrate(expr.subs(n, i), (x,0,1))) for i in N])
+    aprox = np.array([(-1)**i * (sy.subfactorial(i) - sy.factorial(i)/np.e) for i in N])
+
+    # Get forward error
+    error = np.abs(sympy - aprox)
+    
+    # Plot
+    plt.plot(N, error)
+
+    # Plot properties
+    plt.xlabel('$n$')
+    plt.yscale('log')
+    plt.ylabel('Forward error')
+    plt.title('Forward error of algorithm')
+    plt.show()
