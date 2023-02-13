@@ -18,9 +18,9 @@ def matrix_cond(A):
     # Get singular values
     sv = spla.svdvals(A)
 
-    # If zero is a singular value, return a big number #inf
-    if 0 in sv:
-        return 1e16 #np.inf
+    # If zero is a singular value, return inf
+    # if 0 in sv:
+    #     return np.inf
     
     return sv[0]/sv[-1]
 
