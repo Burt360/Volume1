@@ -35,3 +35,39 @@ Comments:
 
 -------------------------------------------------------------------------------
 
+02/14/23 10:36
+
+Problem 1 (5 points):
+matrix_cond() failed for A a 5x5 singular matrix
+	Correct response: 3.0757099352227196e+16
+	Student response: 3.984272896613706e+16
+Score += 3
+
+Problem 2 (10 points):
+Score += 10
+
+Problem 3 (5 points):
+Score += 5
+
+Problem 4 (5 points):
+Score += 5
+
+Problem 5 (10 points):
+Score += 10
+
+Problem 6 (10 points):
+Score += 10
+
+Code Quality (5 points):
+Score += 5
+
+Total score: 48/50 = 96.0%
+
+Great job!
+
+
+Comments:
+	WEll done
+
+-------------------------------------------------------------------------------
+
