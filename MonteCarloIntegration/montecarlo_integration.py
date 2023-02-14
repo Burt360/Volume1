@@ -1,9 +1,14 @@
 # montecarlo_integration.py
 """Volume 1: Monte Carlo Integration.
-<Name>
-<Class>
-<Date>
+Nathan Schill
+Section 2
+Tues. Feb. 21, 2023
 """
+
+import numpy as np
+from scipy import linalg as la
+from scipy import stats
+import matplotlib.pyplot as plt
 
 
 # Problem 1
@@ -18,7 +23,19 @@ def ball_volume(n, N=10000):
     Returns:
         (float): An estimate for the volume of the n-dimensional unit ball.
     """
-    raise NotImplementedError("Problem 1 Incomplete")
+
+    # Get N points from n-interval [-1, 1] x ... x [-1, 1] in R^n
+    points = np.random.uniform(-1, 1, (n, N))
+
+    # Get distances from origin
+    lengths = la.norm(points, axis=0)
+
+    # Count points within unit ball
+    num_within = np.count_nonzero(lengths < 1)
+
+    # Multiply percentage of points within unit ball by volume
+    # of n-interval used in uniform distribution above
+    return 2**n * (num_within/N)
 
 
 # Problem 2
@@ -39,7 +56,15 @@ def mc_integrate1d(f, a, b, N=10000):
         >>> mc_integrate1d(f, -4, 2)    # Integrate from -4 to 2.
         23.734810301138324              # The true value is 24.
     """
-    raise NotImplementedError("Problem 2 Incomplete")
+    
+    # Sample N random points from [a, b]
+    pts = np.random.uniform(a, b, size=N)
+
+    # Get V(omega)
+    vol = b-a
+
+    # Use equation (11.2) from lab PDF
+    return vol*np.mean(f(pts))
 
 
 # Problem 3
@@ -64,7 +89,22 @@ def mc_integrate(f, mins, maxs, N=10000):
         >>> mc_integrate(f, [1, -2], [3, 1])
         53.562651072181225              # The true value is 54.
     """
-    raise NotImplementedError("Problem 3 Incomplete")
+
+    # Number of dimensions
+    n = len(mins)
+
+    # Change to ndarrays; get V(omega)
+    mins, maxs = np.array(mins), np.array(maxs)
+    vol = np.prod(maxs-mins)
+    
+    # Sample pts from standard uniform distribution in n dimensions, then scale and shift
+    pts = np.random.uniform(size=(n, N)).T
+    pts = (pts * (maxs-mins) + mins).T
+    
+    # Each column is a point
+
+    # Use equation (11.1) from lab PDF
+    return vol * np.mean(f(pts))
 
 
 # Problem 4
@@ -79,4 +119,47 @@ def prob4():
     - Plot the relative error against the sample size N on a log-log scale.
         Also plot the line 1 / sqrt(N) for comparison.
     """
-    raise NotImplementedError("Problem 4 Incomplete")
+    
+    # Define the bounds of integration
+    mins = np.array([-3/2, 0, 0, 0])
+    maxs = np.array([3/4, 1, 1/2, 1])
+
+    ### Get the "exact" value of the integral with SciPy
+    # The distribution has mean 0 and covariance I (the nxn identity)
+    means, cov = np.zeros(4), np.eye(4)
+    # Compute the integral with SciPy
+    F = stats.mvn.mvnun(mins, maxs, means, cov)[0]
+
+    def f(x):
+        '''x in R^4'''
+        n = 4
+        
+        # If x is a single point
+        if len(x.shape) == 1:
+            inner_prod = np.dot(x, x)
+        
+        # Elif x is an array of points
+        elif len(x.shape) == 2:
+            # Each column is a point, so transpose to get each point as a row
+            inner_prod = np.array([np.dot(t, t) for t in x.T])
+        
+        return np.exp(-inner_prod/2) / (2*np.pi)**(n/2)
+
+    # Get 20 integers log spaced between 10^1 = 1e1 and 10^5 = 1e5
+    N = np.logspace(1, 5, 20).astype(int)
+
+    # Estimate integral of f over domain with the n points for each n in N
+    estimates = np.array([mc_integrate(f, mins, maxs, n) for n in N])
+    
+    # Get relative error for each estimate
+    rel_error = np.abs((estimates - F)/F)
+
+    # Plot
+    plt.loglog(N, rel_error, label='Relative error')
+    plt.loglog(N, 1/(N)**(1/2), label='$1/\sqrt{N}$')
+
+    # Plot properties
+    plt.legend()
+    plt.title('Relative error of Monte Carlo integration of multivariate normal')
+    plt.xlabel('Number of points ($N$)')
+    plt.show()
