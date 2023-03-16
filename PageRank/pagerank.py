@@ -142,7 +142,7 @@ def get_ranks(d):
     """
 
     # Sort d by keys (alphabetically)
-    d = {key : d[key] for key in sorted(d)}
+    d = {key : d[key] for key in sorted(d)[::-1]}
     
     # Sort by value (get), and reverse to sort from largest to smallest
     return sorted(d, key=d.get)[::-1]
