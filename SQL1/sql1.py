@@ -6,6 +6,8 @@ Tues. Apr. 4, 2023
 """
 
 import sqlite3 as sql
+import numpy as np
+from matplotlib import pyplot as plt
 import csv
 
 # Problems 1, 2, and 4
@@ -150,7 +152,20 @@ def prob5(db_file="students.db"):
     Returns:
         (list): the complete result set for the query.
     """
-    raise NotImplementedError("Problem 5 Incomplete")
+    
+    try:
+        with sql.connect(db_file) as conn:
+            cur = conn.cursor()
+
+            # Get the names of students and courses where the student has an A or A+
+            cur.execute("SELECT SI.StudentName, CI.CourseName "
+                        "FROM StudentInfo as SI, CourseInfo as CI, StudentGrades as SG "
+                        "WHERE SG.Grade IN ('A', 'A+') AND "
+                        "SI.StudentID==SG.StudentID AND SG.CourseID==CI.CourseID;")
+
+            return cur.fetchall()
+    finally:
+        conn.close()
 
 
 # Problem 6
@@ -166,4 +181,43 @@ def prob6(db_file="earthquakes.db"):
     Returns:
         (float): The average magnitude of all earthquakes in the database.
     """
-    raise NotImplementedError("Problem 6 Incomplete")
+   
+    try:
+        with sql.connect(db_file) as conn:
+            cur = conn.cursor()
+
+            # Earthquake magnitudes for years 1800-1899
+            eq_1800s =  cur.execute("SELECT Magnitude "
+                        "FROM USEarthquakes "
+                        "WHERE Year BETWEEN 1800 AND 1899").fetchall()
+
+            # Earthquake magnitudes for years 1900-1999
+            eq_1900s =  cur.execute("SELECT Magnitude "
+                        "FROM USEarthquakes "
+                        "WHERE Year BETWEEN 1900 AND 1999").fetchall()
+
+            # Earthquake magnitude average for all years
+            eq_avg =  cur.execute("SELECT AVG(Magnitude) "
+                        "FROM USEarthquakes").fetchone()
+            
+            # Flatten
+            eq_1800s, eq_1900s = np.ravel(eq_1800s), np.ravel(eq_1900s)
+            eq_avg = eq_avg[0]
+
+            # Plot histograms
+            fig, axs = plt.subplots(2)
+            axs[0].hist(eq_1800s)
+            axs[0].set_title('1800s')
+            axs[1].hist(eq_1900s)
+            axs[1].set_title('1900s')
+
+            # Plot properties
+            plt.suptitle('Earthquake magnitude frequencies')
+            plt.tight_layout()
+            plt.show()
+
+            return eq_avg
+            
+    finally:
+        conn.close()
+
