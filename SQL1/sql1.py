@@ -1,15 +1,17 @@
 # sql1.py
 """Volume 1: SQL 1 (Introduction).
-<Name>
-<Class>
-<Date>
+Nathan Schill
+Section 2
+Tues. Apr. 4, 2023
 """
 
+import sqlite3 as sql
+import csv
 
 # Problems 1, 2, and 4
 def student_db(db_file="students.db", student_info="student_info.csv",
                                       student_grades="student_grades.csv"):
-    """Connect to the database db_file (or create it if it doesn’t exist).
+    """Connect to the database db_file (or create it if it doesn't exist).
     Drop the tables MajorInfo, CourseInfo, StudentInfo, and StudentGrades from
     the database (if they exist). Recreate the following (empty) tables in the
     database with the specified columns.
@@ -32,7 +34,7 @@ def student_db(db_file="students.db", student_info="student_info.csv",
                 3   | Writing                     3    | Pottery
                 4   | Art                         4    | History
 
-    Finally, in the StudentInfo table, replace values of −1 in the MajorID
+    Finally, in the StudentInfo table, replace values of -1 in the MajorID
     column with NULL values.
 
     Parameters:
@@ -42,12 +44,53 @@ def student_db(db_file="students.db", student_info="student_info.csv",
         student_grades (str): The name of a csv file containing data for the
             StudentGrades table.
     """
-    raise NotImplementedError("Problem 1 Incomplete")
+    
+    try:
+        with sql.connect(db_file) as conn:
+            cur = conn.cursor()
+
+            # Drop tables if exist
+            cur.execute('DROP TABLE IF EXISTS MajorInfo')
+            cur.execute('DROP TABLE IF EXISTS CourseInfo')
+            cur.execute('DROP TABLE IF EXISTS StudentInfo')
+            cur.execute('DROP TABLE IF EXISTS StudentGrades')
+
+            # Create tables
+            cur.execute('CREATE TABLE MajorInfo (MajorID INTEGER, MajorName TEXT)')
+            cur.execute('CREATE TABLE CourseInfo (CourseID INTEGER, CourseName TEXT)')
+            cur.execute('CREATE TABLE StudentInfo (StudentID INTEGER, StudentName TEXT,'
+                        'MajorID INTEGER)')
+            cur.execute('CREATE TABLE StudentGrades (StudentID INTEGER, CourseID INTEGER,'
+                        'Grade TEXT)')
+            
+            # Populate MajorInfo
+            rows = [(1, 'Math'), (2, 'Science'), (3, 'Writing'), (4, 'Art')]
+            cur.executemany("INSERT INTO MajorInfo VALUES(?,?);", rows)
+
+            # Populate CourseInfo
+            rows = [(1, 'Calculus'), (2, 'English'), (3, 'Pottery'), (4, 'History')]
+            cur.executemany("INSERT INTO CourseInfo VALUES(?,?);", rows)
+
+            # Populate StudentInfo
+            with open(student_info, 'r') as file:
+                rows = list(csv.reader(file))
+                cur.executemany("INSERT INTO StudentInfo VALUES(?,?,?);", rows)
+            
+            # Populate StudentGrades
+            with open(student_grades, 'r') as file:
+                rows = list(csv.reader(file))
+                cur.executemany("INSERT INTO StudentGrades VALUES(?,?,?);", rows)
+            
+            # In the MajorID column of the StudentInfo table, change -1 values to NULL
+            cur.execute("UPDATE StudentInfo SET MajorID=NULL where MajorID==-1")
+            
+    finally:
+        conn.close()
 
 
 # Problems 3 and 4
 def earthquakes_db(db_file="earthquakes.db", data_file="us_earthquakes.csv"):
-    """Connect to the database db_file (or create it if it doesn’t exist).
+    """Connect to the database db_file (or create it if it doesn't exist).
     Drop the USEarthquakes table if it already exists, then create a new
     USEarthquakes table with schema
     (Year, Month, Day, Hour, Minute, Second, Latitude, Longitude, Magnitude).
@@ -62,7 +105,37 @@ def earthquakes_db(db_file="earthquakes.db", data_file="us_earthquakes.csv"):
         data_file (str): The name of a csv file containing data for the
             USEarthquakes table.
     """
-    raise NotImplementedError("Problem 3 Incomplete")
+    
+    try:
+        with sql.connect(db_file) as conn:
+            cur = conn.cursor()
+
+            # Drop table if exist
+            cur.execute('DROP TABLE IF EXISTS USEarthquakes')
+
+            # Create table
+            cur.execute('CREATE TABLE USEarthquakes ('
+                        'Year INTEGER, Month INTEGER, Day INTEGER, '
+                        'Hour INTEGER, Minute INTEGER, Second INTEGER, '
+                        'Latitude REAL, Longitude REAL, Magnitude REAL'
+                        ')')
+
+            # Populate table
+            with open(data_file, 'r') as file:
+                rows = list(csv.reader(file))
+                cur.executemany("INSERT INTO USEarthquakes VALUES(?,?,?,?,?,?,?,?,?);", rows)
+            
+            # Remote rows with 0 magnitude
+            cur.execute('DELETE FROM USEarthquakes WHERE Magnitude==0')
+
+            # Replace 0 values in Day, Hour, Minute, and Second columns with NULL
+            cur.execute('UPDATE USEarthquakes SET Day=NULL WHERE Day==0')
+            cur.execute('UPDATE USEarthquakes SET Hour=NULL WHERE Hour==0')
+            cur.execute('UPDATE USEarthquakes SET Minute=NULL WHERE Minute==0')
+            cur.execute('UPDATE USEarthquakes SET Second=NULL WHERE Second==0')
+
+    finally:
+        conn.close()
 
 
 # Problem 5
