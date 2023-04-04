@@ -1,10 +1,11 @@
 # solutions.py
 """Volume 1: SQL 2.
-<Name>
-<Class>
-<Date>
+Nathan Schill
+Section 2
+Tues. Apr. 11, 2023
 """
 
+import sqlite3 as sql
 
 # Problem 1
 def prob1(db_file="students.db"):
@@ -17,7 +18,22 @@ def prob1(db_file="students.db"):
     Returns:
         (list): a list of strings, each of which is a student name.
     """
-    raise NotImplementedError("Problem 1 Incomplete")
+    
+    try:
+        with sql.connect(db_file) as conn:
+            cur = conn.cursor()
+
+            # Execute query
+            cur.execute("SELECT SI.StudentName "
+                        "FROM StudentInfo AS SI INNER JOIN StudentGrades as SG "
+                        "ON SI.StudentID == SG.StudentID "
+                        "WHERE SG.Grade=='B'")
+            
+            # Get just name strings, not tuples of name strings
+            return [tup[0] for tup in cur.fetchall()]
+    
+    finally:
+        conn.close()
 
 
 # Problem 2
