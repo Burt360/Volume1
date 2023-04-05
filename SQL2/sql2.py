@@ -49,7 +49,26 @@ def prob2(db_file="students.db"):
     Returns:
         (list): the complete result set for the query.
     """
-    raise NotImplementedError("Problem 2 Incomplete")
+    
+    try:
+        with sql.connect(db_file) as conn:
+            cur = conn.cursor()
+            
+            # Execute query
+            cur.execute("SELECT SI.StudentName, MI.MajorName, SG.Grade FROM "
+                        "StudentInfo as SI INNER JOIN "
+                        "StudentGrades as SG, "
+                        "CourseInfo as CI ON "
+                        "SI.StudentID==SG.StudentID AND "
+                        "SG.CourseID==CI.CourseID LEFT OUTER JOIN "
+                        "MajorInfo as MI ON "
+                        "SI.MajorId==MI.MajorID WHERE "
+                        "CI.CourseName=='Calculus'")
+
+            return cur.fetchall()
+    
+    finally:
+        conn.close()
 
 
 # Problem 3
@@ -64,7 +83,24 @@ def prob3(db_file="students.db"):
     Returns:
         (list): the complete result set for the query.
     """
-    raise NotImplementedError("Problem 3 Incomplete")
+    
+    try:
+        with sql.connect(db_file) as conn:
+            cur = conn.cursor()
+            
+            # Execute query
+            cur.execute("SELECT MI.MajorName, COUNT(*) as num_students "
+                        "FROM "
+                        "StudentInfo AS SI LEFT OUTER JOIN MajorInfo as MI ON "
+                        "SI.MajorID==MI.MajorID "
+                        "GROUP BY "
+                        "SI.MajorID "
+                        "ORDER BY num_students DESC, MI.MajorName ASC")
+
+            return cur.fetchall()
+    
+    finally:
+        conn.close()
 
 
 # Problem 4
