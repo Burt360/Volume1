@@ -122,7 +122,38 @@ def prob4(db_file="students.db"):
     Returns:
         (list): the complete result set for the query.
     """
-    raise NotImplementedError("Problem 4 Incomplete")
+    
+    try:
+        with sql.connect(db_file) as conn:
+            cur = conn.cursor()
+
+            # Execute query
+            cur.execute("SELECT SI.StudentName, COUNT(SG.points), "
+                        "AVG(SG.points) AS gpa FROM ("
+                            "SELECT StudentID, CASE Grade "
+                                "WHEN 'A+' THEN 4.0 "
+                                "WHEN 'A' THEN 4.0 "
+                                "WHEN 'A-' THEN 3.7 "
+                                "WHEN 'B+' THEN 3.4 "
+                                "WHEN 'B' THEN 3.0 "
+                                "WHEN 'B-' THEN 2.7 "
+                                "WHEN 'C+' THEN 2.4 "
+                                "WHEN 'C' THEN 2.0 "
+                                "WHEN 'C-' THEN 1.7 "
+                                "WHEN 'D+' THEN 1.4 "
+                                "WHEN 'D' THEN 1.0 "
+                                "WHEN 'D-' THEN 0.7 "
+                                "ELSE 0 END AS points "
+                            "FROM StudentGrades) AS SG "
+                        "INNER JOIN StudentInfo AS SI "
+                        "ON SG.StudentId==SI.StudentID "
+                        "GROUP BY SI.StudentName "
+                        "ORDER BY gpa DESC")
+
+            return cur.fetchall()
+    
+    finally:
+        conn.close()
 
 
 # Problem 5
@@ -136,4 +167,135 @@ def prob5(db_file="mystery_database.db"):
     Returns:
         (list): outlier's name, outlier's ID number, outlier's eye color, outlier's height
     """
-    raise NotImplementedError("Problem 5 Incomplete")
+    
+    try:
+        with sql.connect(db_file) as conn:
+            cur = conn.cursor()
+
+            print()
+            # Check column names
+            cur.execute("SELECT * FROM table_1")
+            print([d[0] for d in cur.description])
+
+            cur.execute("SELECT * FROM table_2")
+            print([d[0] for d in cur.description])
+
+            cur.execute("SELECT * FROM table_3")
+            print([d[0] for d in cur.description])
+
+            cur.execute("SELECT * FROM table_4")
+            print([d[0] for d in cur.description])
+
+            # Clear
+            cur.close()
+            cur = conn.cursor()
+
+            # Check homeworld
+            cur.execute("SELECT home_world, COUNT(home_world) as hw FROM "
+                        "table_4 "
+                        "GROUP BY home_world "
+                        "HAVING hw==1")
+            # print(*[result[0] for result in cur.fetchall()], sep='\n')
+            # Outlier: "Earth"
+
+            # Check Earth's character's species
+            cur.execute("SELECT species, species_2nd, species_3rd FROM "
+                        "table_4 "
+                        "WHERE home_world=='Earth'")
+            # print(*[result for result in cur.fetchall()], sep='\n')
+
+            # Check description
+            cur.execute("SELECT ID_number, description FROM "
+                        "table_2 "
+                        "WHERE description LIKE '%human%Earth%'")
+            # print(*[result for result in cur.fetchall()], sep='\n')
+            # ID number: 830744
+            # (Name: "William Thomas 'Will' Riker")
+
+            # Check name, eye color
+            cur.execute("SELECT name, eye_color FROM "
+                        "table_1 "
+                        "WHERE name LIKE '%Will%'")
+            print(*[result for result in cur.fetchall()], sep='\n')
+            # Name: William T. Riker
+            # Eye color: Hazel-blue
+
+            cur.execute("SELECT height FROM "
+                        "table_3 "
+                        "WHERE eye_color=='Hazel-blue'")
+            # print(*[result for result in cur.fetchall()], sep='\n')
+            # Height: 1.93
+
+            return ['William T. Riker', 830744, 'Hazel-blue', 1.93]
+            
+    
+    finally:
+        conn.close()
+
+""""
+# Check gender
+cur.execute("SELECT gender, COUNT(gender) as g FROM "
+            "table_3 "
+            "GROUP BY gender ")
+# print(*[result for result in cur.fetchall()], sep='\n')
+
+# Check species
+cur.execute("SELECT species, COUNT(species) as s FROM "
+            "table_4 "
+            "GROUP BY species "
+            "HAVING s==1")
+# print(*[result[0] for result in cur.fetchall()], sep='\n')
+# Outlier: "Sentient species"
+
+# Check species_2nd
+cur.execute("SELECT species_2nd, COUNT(species_2nd) as s FROM "
+            "table_4 "
+            "GROUP BY species_2nd "
+            "HAVING s==1")
+# print(*[result[0] for result in cur.fetchall()], sep='\n')
+
+# Check species_3rd
+cur.execute("SELECT species_3rd, COUNT(species_3rd) as s FROM "
+            "table_4 "
+            "GROUP BY species_3rd")
+# print(*[result for result in cur.fetchall()], sep='\n')
+
+# Check skin color
+cur.execute("SELECT skin_color, COUNT(skin_color) as s FROM "
+            "table_3 "
+            "GROUP BY skin_color "
+            "HAVING s==1")
+# print(*[result[0] for result in cur.fetchall()], sep='\n')
+
+# Check description
+cur.execute("SELECT description, COUNT(description) as d FROM "
+            "table_2 "
+            "GROUP BY description "
+            "HAVING d==1")
+# print(*[result[0] for result in cur.fetchall()], sep='\n')
+
+# Check height
+cur.execute("SELECT height, COUNT(height) as h FROM "
+            "table_3 "
+            "GROUP BY height "
+            "HAVING h==1")
+# print(*[result[0] for result in cur.fetchall()], sep='\n')
+
+# Check weight
+cur.execute("SELECT weight, COUNT(weight) as w FROM "
+            "table_3 "
+            "GROUP BY weight "
+            "HAVING w==1")
+# print(*[result[0] for result in cur.fetchall()], sep='\n')
+# Outlier: "Naturally black"
+
+# Check hair color
+cur.execute("SELECT hair_color, COUNT(hair_color) as h FROM "
+            "table_3 "
+            "GROUP BY hair_color "
+            "HAVING h==1")
+# print(*[result[0] for result in cur.fetchall()], sep='\n')
+# Naturally black
+
+# return cur.fetchall()
+"""
