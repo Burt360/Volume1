@@ -172,19 +172,19 @@ def prob5(db_file="mystery_database.db"):
         with sql.connect(db_file) as conn:
             cur = conn.cursor()
 
-            print()
+            # print()
             # Check column names
             cur.execute("SELECT * FROM table_1")
-            print([d[0] for d in cur.description])
+            # print([d[0] for d in cur.description])
 
             cur.execute("SELECT * FROM table_2")
-            print([d[0] for d in cur.description])
+            # print([d[0] for d in cur.description])
 
             cur.execute("SELECT * FROM table_3")
-            print([d[0] for d in cur.description])
+            # print([d[0] for d in cur.description])
 
             cur.execute("SELECT * FROM table_4")
-            print([d[0] for d in cur.description])
+            # print([d[0] for d in cur.description])
 
             # Clear
             cur.close()
@@ -203,6 +203,7 @@ def prob5(db_file="mystery_database.db"):
                         "table_4 "
                         "WHERE home_world=='Earth'")
             # print(*[result for result in cur.fetchall()], sep='\n')
+            # Species: 'Human'
 
             # Check description
             cur.execute("SELECT ID_number, description FROM "
@@ -216,7 +217,7 @@ def prob5(db_file="mystery_database.db"):
             cur.execute("SELECT name, eye_color FROM "
                         "table_1 "
                         "WHERE name LIKE '%Will%'")
-            print(*[result for result in cur.fetchall()], sep='\n')
+            # print(*[result for result in cur.fetchall()], sep='\n')
             # Name: William T. Riker
             # Eye color: Hazel-blue
 
@@ -227,75 +228,6 @@ def prob5(db_file="mystery_database.db"):
             # Height: 1.93
 
             return ['William T. Riker', 830744, 'Hazel-blue', 1.93]
-            
     
     finally:
         conn.close()
-
-""""
-# Check gender
-cur.execute("SELECT gender, COUNT(gender) as g FROM "
-            "table_3 "
-            "GROUP BY gender ")
-# print(*[result for result in cur.fetchall()], sep='\n')
-
-# Check species
-cur.execute("SELECT species, COUNT(species) as s FROM "
-            "table_4 "
-            "GROUP BY species "
-            "HAVING s==1")
-# print(*[result[0] for result in cur.fetchall()], sep='\n')
-# Outlier: "Sentient species"
-
-# Check species_2nd
-cur.execute("SELECT species_2nd, COUNT(species_2nd) as s FROM "
-            "table_4 "
-            "GROUP BY species_2nd "
-            "HAVING s==1")
-# print(*[result[0] for result in cur.fetchall()], sep='\n')
-
-# Check species_3rd
-cur.execute("SELECT species_3rd, COUNT(species_3rd) as s FROM "
-            "table_4 "
-            "GROUP BY species_3rd")
-# print(*[result for result in cur.fetchall()], sep='\n')
-
-# Check skin color
-cur.execute("SELECT skin_color, COUNT(skin_color) as s FROM "
-            "table_3 "
-            "GROUP BY skin_color "
-            "HAVING s==1")
-# print(*[result[0] for result in cur.fetchall()], sep='\n')
-
-# Check description
-cur.execute("SELECT description, COUNT(description) as d FROM "
-            "table_2 "
-            "GROUP BY description "
-            "HAVING d==1")
-# print(*[result[0] for result in cur.fetchall()], sep='\n')
-
-# Check height
-cur.execute("SELECT height, COUNT(height) as h FROM "
-            "table_3 "
-            "GROUP BY height "
-            "HAVING h==1")
-# print(*[result[0] for result in cur.fetchall()], sep='\n')
-
-# Check weight
-cur.execute("SELECT weight, COUNT(weight) as w FROM "
-            "table_3 "
-            "GROUP BY weight "
-            "HAVING w==1")
-# print(*[result[0] for result in cur.fetchall()], sep='\n')
-# Outlier: "Naturally black"
-
-# Check hair color
-cur.execute("SELECT hair_color, COUNT(hair_color) as h FROM "
-            "table_3 "
-            "GROUP BY hair_color "
-            "HAVING h==1")
-# print(*[result[0] for result in cur.fetchall()], sep='\n')
-# Naturally black
-
-# return cur.fetchall()
-"""
