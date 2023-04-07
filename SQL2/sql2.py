@@ -227,7 +227,7 @@ def prob5(db_file="mystery_database.db"):
             # print(*[result for result in cur.fetchall()], sep='\n')
             # Height: 1.93
 
-            return ['William T. Riker', 830744, 'Hazel-blue', 1.93]
+            return ['William T. Riker', '830744', 'Hazel-blue', '1.93']
     
     finally:
         conn.close()
