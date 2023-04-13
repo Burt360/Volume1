@@ -301,7 +301,7 @@ def prob7():
     """
     
     # n and omegas
-    n = 4
+    n = 20
     O = np.arange(1, 2, 0.05)
 
     # Pre-generate A and b
@@ -331,5 +331,5 @@ def prob7():
     plt.ylabel('Number of iterations')
     plt.title('Hot plate: omega vs number of iterations')
     plt.show()
-    
+
     return O[np.argmin(num_iters)]
