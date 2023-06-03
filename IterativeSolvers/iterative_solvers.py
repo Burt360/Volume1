@@ -208,6 +208,7 @@ def sor(A, b, omega, tol=1e-8, maxiter=100):
     x1 = np.copy(x0)
 
     # Iterate according to equation (15.2)
+    diag = A.diagonal()
     for i in range(maxiter):
         for j in range(n):
             ### Code from lab PDF
@@ -220,7 +221,7 @@ def sor(A, b, omega, tol=1e-8, maxiter=100):
             # corresponding elements of x.
             Ajx = A.data[rowstart:rowend] @ x0[A.indices[rowstart:rowend]]
 
-            x1[j] = x0[j] + omega*(b[j] - Ajx)/A.diagonal()[j]
+            x1[j] = x0[j] + omega*(b[j] - Ajx)/diag[j]
 
         # Check distance between iterations
         if la.norm(x1 - x0, ord=np.inf) < tol:

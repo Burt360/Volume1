@@ -1,65 +1,19 @@
-# Nathan's ignored files ------------------------------------------------------
-Exceptions_FileIO/a_lower.txt
-Exceptions_FileIO/a_reverse.txt
-Exceptions_FileIO/a_transpose.txt
-Exceptions_FileIO/a_upper.txt
-Exceptions_FileIO/b_lower.txt
-Exceptions_FileIO/b_reverse.txt
-Exceptions_FileIO/b_transpose.txt
-Exceptions_FileIO/b_upper.txt
-Exceptions_FileIO/spec_exceptions_fileIO.py
-ObjectOriented/spec_object_oriented.py
-StandardLibrary/spec_standard_library.py
 UnixShell1/Shell1/
-UnixShell1/img_649.jpg
 
-# Lab data files --------------------------------------------------------------
+test*.py
 
-Conditioning_Stability/stability_data.npy
-DataVisualization/anscombe.npy
-DataVisualization/MLB.npy
-DataVisualization/earthquakes.npy
-DataVisualization/countries.npy
-Differentiation/plane.npy
-DrazinInverse/social_network.csv
-FacialRecognition/faces94.zip
-ImageSegmentation/dream.png
-ImageSegmentation/dream_gray.png
-ImageSegmentation/blue_heart.png
-ImageSegmentation/HeartMatrixA.npz
-ImageSegmentation/HeartMatrixD.npy
-KMeans/earthquake_coordinates.npy
-KMeans/nasa.zip
-KMeans/sacramento.npy
-LeastSquares_Eigenvalues/circle.npy
-LeastSquares_Eigenvalues/ellipse.npy
-LeastSquares_Eigenvalues/housing.npy
-LinearTransformations/horse.npy
-MatplotlibIntro/FARS.npy
-NumpyIntro/grid.npy
-PageRank/web_stanford.txt
-PageRank/ncaa2010.csv
-PageRank/ncaa2011.csv
-PageRank/ncaa2012.csv
-PageRank/ncaa2013.csv
-PageRank/ncaa2014.csv
-PageRank/ncaa2015.csv
-PageRank/ncaa2016.csv
-PageRank/ncaa2017.csv
-PageRank/top250movies.txt
-Profiling/names.txt
-Profiling/triangle.txt
-Profiling/triangle_large.txt
-SQL1/student_info.csv
-SQL1/student_grades.csv
-SQL1/us_earthquakes.csv
-SQL2/students.db
-SQL2/mystery_database.db
-SVD_ImageCompression/hubble.jpg
-SVD_ImageCompression/hubble_gray.jpg
-UnixShell1/Shell1.zip
+*.ipynb
 
-# General Files ---------------------------------------------------------------
+# Data files
+*.txt
+*.npy
+*.npz
+*.zip
+*.png
+*.jpg
+*.csv
+*.db
+*.wav
 
 # Extra Python files.
 __init__.py
