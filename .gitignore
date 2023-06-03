@@ -1,9 +1,5 @@
 UnixShell1/Shell1/
 
-test*.py
-
-*.ipynb
-
 # Data files
 *.txt
 *.npy
