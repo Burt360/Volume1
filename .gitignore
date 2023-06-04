@@ -1,4 +1,7 @@
-UnixShell1/Shell1/
+# Specific files/folders
+/UnixShell1/Shell1/
+/*.sh
+/*.ipynb
 
 # Data files
 *.txt
